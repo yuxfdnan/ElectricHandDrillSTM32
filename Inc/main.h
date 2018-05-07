@@ -46,6 +46,7 @@
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
+#define BLDC_PWM_Freq 25000
 
 #define LED_Ctrl_Pin GPIO_PIN_0
 #define LED_Ctrl_GPIO_Port GPIOA
@@ -96,7 +97,46 @@
 /* #define USE_FULL_ASSERT    1U */
 
 /* USER CODE BEGIN Private defines */
+/** @brief Reset TIM IC polarity
+  * @param  __HANDLE__ TIM handle
+  * @param  __CHANNEL__ specifies TIM Channel
+  * @param  __POLARITY__
+  *           This parameter can be one of the following values:
+  *            @arg TIM_CCER_CC1P:
+  *            @arg TIM_CCER_CC2P:
+  *            @arg TIM_CCER_CC3P:
+  *            @arg TIM_CCER_CC4P:
+  *            @arg TIM_CCER_CC1NP:
+  *            @arg TIM_CCER_CC2NP:
+  *            @arg TIM_CCER_CC3NP:
+  *            @arg TIM_CCER_CC4NP:
+  * @retval None
+  */
+#define TIM_RESET_OC_POLARITY(__HANDLE__, __CHANNEL__, __POLARITY__) \
+ ((__HANDLE__)->Instance->CCER &= (uint16_t)~(__POLARITY__))
 
+/**
+  * @brief  Sets the TIM Complementary Output Compare Polarity
+  * @param  __HANDLE__ TIM handle.
+  * @param  __CHANNEL__ TIM Channels to be configured.
+  *          This parameter can be one of the following values:
+  *            @arg TIM_CHANNEL_1: TIM Channel 1 selected
+  *            @arg TIM_CHANNEL_2: TIM Channel 2 selected
+  *            @arg TIM_CHANNEL_3: TIM Channel 3 selected
+  *            @arg TIM_CHANNEL_4: TIM Channel 4 selected
+  * @param  __POLARITY__ Polarity for TIx source
+  *            @arg TIM_OCPOLARITY_HIGH: active high
+  *            @arg TIM_OCPOLARITY_LOW: active low
+  *            @arg TIM_OCNPOLARITY_HIGH: active high
+  *            @arg TIM_OCNPOLARITY_LOW: active low
+  * @note  The polarity TIM_OCNPOLARITY_HIGH/TIM_OCNPOLARITY_LOW is not authorized  for TIM Channel 4.
+  * @retval None
+  */
+#define __HAL_TIM_SET_OC_POLARITY(__HANDLE__, __CHANNEL__, __POLARITY__)    \
+        do{                                                                     \
+          TIM_RESET_OC_POLARITY((__HANDLE__), (__CHANNEL__), (__POLARITY__));     \
+          TIM_SET_CAPTUREPOLARITY((__HANDLE__), (__CHANNEL__), (__POLARITY__)); \
+        }while(0)
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

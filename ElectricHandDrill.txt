@@ -1,0 +1,75 @@
+Configuration	ElectricHandDrill
+STM32CubeMX 	4.23.0
+Date	05/06/2018
+MCU	STM32F030K6Tx
+
+
+
+PERIPHERALS	MODES	FUNCTIONS	PINS
+ADC	IN1	ADC_IN1	PA1
+ADC	IN2	ADC_IN2	PA2
+ADC	IN3	ADC_IN3	PA3
+ADC	IN4	ADC_IN4	PA4
+ADC	IN5	ADC_IN5	PA5
+ADC	IN6	ADC_IN6	PA6
+SYS	SysTick	SYS_VS_Systick	VP_SYS_VS_Systick
+TIM1	Internal Clock	TIM1_VS_ClockSourceINT	VP_TIM1_VS_ClockSourceINT
+TIM1	PWM Generation CH1 CH1N	TIM1_CH1	PA8
+TIM1	PWM Generation CH1 CH1N	TIM1_CH1N	PA7
+TIM1	PWM Generation CH2 CH2N	TIM1_CH2	PA9
+TIM1	PWM Generation CH2 CH2N	TIM1_CH2N	PB0
+TIM1	PWM Generation CH3 CH3N	TIM1_CH3	PA10
+TIM1	PWM Generation CH3 CH3N	TIM1_CH3N	PB1
+TIM1	PWM Generation No Output	TIM1_VS_no_output4	VP_TIM1_VS_no_output4
+
+
+
+Pin Nb	PINs	FUNCTIONs	LABELs
+6	PA0	GPIO_Output	LED_Ctrl
+7	PA1	ADC_IN1	MidAD
+8	PA2	ADC_IN2	CurrentAD
+9	PA3	ADC_IN3	SwtichAD
+10	PA4	ADC_IN4	MotorAD_A
+11	PA5	ADC_IN5	MotorAD_B
+12	PA6	ADC_IN6	MotorAD_C
+13	PA7	TIM1_CH1N	Low3
+14	PB0	TIM1_CH2N	Low2
+15	PB1	TIM1_CH3N	Low1
+18	PA8	TIM1_CH1	High3
+19	PA9	TIM1_CH2	High2
+20	PA10	TIM1_CH3	High1
+21	PA11	GPIO_Input	Swtich
+22	PA12	GPIO_Output	SwtichIn
+26	PB3	GPIO_Output	Led1
+27	PB4	GPIO_Output	Led2
+28	PB5	GPIO_Output	Led3
+29	PB6	GPIO_Input	Key1
+30	PB7	GPIO_Input	Key2
+
+
+
+SOFTWARE PROJECT
+
+Project Settings : 
+Project Name : ElectricHandDrill
+Project Folder : D:\Project\STM32CubeMX\workspace\ElectricHandDrill
+Toolchain / IDE : SW4STM32
+Firmware Package Name and Version : STM32Cube FW_F0 V1.9.0
+
+
+Code Generation Settings : 
+STM32Cube Firmware Library Package : Copy only the necessary library files
+Generate peripheral initialization as a pair of '.c/.h' files per peripheral : No
+Backup previously generated files when re-generating : No
+Delete previously generated files when not re-generated : Yes
+Set all free pins as analog (to optimize the power consumption) : No
+
+
+Toolchains Settings : 
+Compiler Optimizations : Balanced Size/Speed
+
+
+
+
+
+
