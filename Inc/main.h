@@ -112,6 +112,7 @@
   *            @arg TIM_CCER_CC4NP:
   * @retval None
   */
+//TODO ÓÐÎÊÌâ
 #define TIM_RESET_OC_POLARITY(__HANDLE__, __CHANNEL__, __POLARITY__) \
  ((__HANDLE__)->Instance->CCER &= (uint16_t)~(__POLARITY__))
 

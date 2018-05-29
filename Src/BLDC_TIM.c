@@ -268,7 +268,8 @@ void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
   {
 //  TIM_ClearITPendingBit(BLDC_TIMER_NUM, TIM_IT_CC4);
 	  MotorA.PWMTicks++;
-
+	  //TODO test
+	  BLDC_SwitchStep();
 //  BLDC_Ctrl_Board_LEDOn(LED2);
 
 //  ADC_SoftwareStartConvCmd(ADC1, ENABLE);

@@ -3,7 +3,14 @@
 
 #include "user_conf.h"
 //#include "stdint.h"
+#include "stm32f0xx_hal.h"
 
+#define TIM_MOD_PWM			1
+#define TIM_MOD_HIGH		2
+#define TIM_MOD_LOW			3
+
+#define CHANNEL_START		1
+#define CHANNEL_STOP		2
 
 typedef struct
 {
@@ -51,6 +58,9 @@ void BLDC_SetStep(unsigned char step);
 
 void BLDC_SwitchStep(void);
 
+void BLDC_SwitchStepTest(void);
+
+void SetChannelState(TIM_HandleTypeDef *htim, uint32_t Channel, uint8_t OC, uint8_t OCN, uint8_t OCxM);
 
 #endif /*__BLDC_MOTOR_H_*/
 

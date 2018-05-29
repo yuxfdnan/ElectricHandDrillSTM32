@@ -148,7 +148,7 @@ int main(void)
 
   MotorA.Step = 0;
 
-  BLDC_SwitchStep();
+//  BLDC_SwitchStep();//Del for test
 
   /*1 Start the conversion process and enable interrupt */
   HAL_ADC_Start_DMA(&hadc, (uint32_t*)&ADC_Value1, 30);
@@ -157,11 +157,62 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  //Only For test
+
+//  HAL_TIM_OC_Stop(&BLDC_TIMER_NUM,TIM_CHANNEL_1);//0 上桥关
+//  __HAL_TIM_SET_OC_POLARITY(&BLDC_TIMER_NUM,TIM_CHANNEL_1,TIM_OCNPOLARITY_HIGH);//有效打开
+//  HAL_TIMEx_OCN_Stop(&BLDC_TIMER_NUM,TIM_CHANNEL_1);//0 下桥关
+//
+//
+//  /*  PhaseB configuration */
+//  HAL_TIM_OC_Start(&BLDC_TIMER_NUM,TIM_CHANNEL_2);// 1 上桥开
+//  HAL_TIMEx_OCN_Start(&BLDC_TIMER_NUM,TIM_CHANNEL_2);//下桥开,同步整流
+//
+  /*  PhaseC configuration */
+  //CC3NP/CC3P没作用
+//  HAL_TIM_OC_Stop(&BLDC_TIMER_NUM,TIM_CHANNEL_3);// 0 上桥关
+//  __HAL_TIM_SET_OC_POLARITY(&BLDC_TIMER_NUM,TIM_CHANNEL_3,TIM_OCNPOLARITY_LOW);// 1  常开,一直打开
+//  HAL_TIMEx_OCN_Stop(&BLDC_TIMER_NUM,TIM_CHANNEL_3);// 1 下桥常开,一直打开
+//  HAL_TIM_OC_Start(&BLDC_TIMER_NUM,TIM_CHANNEL_3);// 0 上桥关
+//  __HAL_TIM_SET_COMPARE(&BLDC_TIMER_NUM,TIM_CHANNEL_3,48000000/BLDC_PWM_Freq - 1);TIM_CCMR1_OC1M_0
+//  BLDC_TIMER_NUM.Instance->CCMR1 |= TIM_CCMR1_OC1M_0;
+
+  //CHANNEL_1
+  //置位101:强制为有效电平.OC_Start OCN_Start -> OC高 OCN低
+  //置位101:强制为有效电平.OC_Stop OCN_Start -> OC低 OCN高
+  //置位101:强制为有效电平.OC_Start OCN_Stop -> OC高 OCN低
+  //置位101:强制为有效电平.OC_Stop OCN_Stop -> OC低 OCN低
+
+  //置位100:强制为无效电平.OC_Start OCN_Start -> OC低 OCN高
+  //置位100:强制为无效电平.OC_Stop OCN_Start -> OC低 OCN低
+  //置位100:强制为无效电平.OC_Start OCN_Stop -> OC低 OCN低
+  //置位100:强制为无效电平.OC_Stop OCN_Stop -> OC低 OCN低
+  BLDC_TIMER_NUM.Instance->CCMR1 &= ~(TIM_CCMR1_OC1M_0|TIM_CCMR1_OC1M_1|TIM_CCMR1_OC1M_2);//清零
+  BLDC_TIMER_NUM.Instance->CCMR1 |= (TIM_CCMR1_OC1M_0 | TIM_CCMR1_OC1M_2);//置位101:强制为有效电平.强制OC1REF 为高。
+//  BLDC_TIMER_NUM.Instance->CCMR1 |= (TIM_CCMR1_OC1M_2);//置位100:强制为无效电平.强制OC1REF 为低。
+//  HAL_TIM_OC_Start(&BLDC_TIMER_NUM,TIM_CHANNEL_1);
+  HAL_TIMEx_OCN_Start(&BLDC_TIMER_NUM,TIM_CHANNEL_1);// 1 下桥常开,一直打开
+  HAL_TIM_OC_Stop(&BLDC_TIMER_NUM,TIM_CHANNEL_1);
+//  HAL_TIMEx_OCN_Stop(&BLDC_TIMER_NUM,TIM_CHANNEL_1);// 1 下桥常开,一直打开
+  HAL_TIM_OC_Start(&BLDC_TIMER_NUM,TIM_CHANNEL_2);
+  HAL_TIMEx_OCN_Start(&BLDC_TIMER_NUM,TIM_CHANNEL_2);
+//  HAL_TIM_OC_Stop(&BLDC_TIMER_NUM,TIM_CHANNEL_3);
+//  HAL_TIMEx_OCN_Stop(&BLDC_TIMER_NUM,TIM_CHANNEL_3);
+  HAL_TIM_PWM_Start(&BLDC_TIMER_NUM,TIM_CHANNEL_3);
+  HAL_TIMEx_PWMN_Start(&BLDC_TIMER_NUM,TIM_CHANNEL_3);
+
+
+
+  MotorA.State = 0;
+//  HAL_TIM_PWM_Start(&BLDC_TIMER_NUM,TIM_CHANNEL_2);
+//  HAL_TIMEx_PWMN_Start(&BLDC_TIMER_NUM,TIM_CHANNEL_2);
+//  BLDC_SwitchStep();
   while (1)
   {
       //等待ADC转换，DMA传输完成
       //清除DMA传输完成标志位
 
+	  //计算AD平均值
 	  tmpUint32[0] = 0;
 	  tmpUint32[1] = 0;
 	  tmpUint32[2] = 0;
@@ -194,99 +245,103 @@ int main(void)
 	  ADCConvertedValue_2[2] = MotorAD_A;
 
 
-       switch(MotorA.State)
-       {
-       case 0:                             //定位
-           if(MotorA.PWMTicks >= 1000)
-           {
-//               BLDC_Ctrl_Board_LEDOn(LED4);
 
-               //   MotorA.FlagSwitchStep = 1;   //换向
-               BLDC_SwitchStep();
-               MotorA.State++;
-
-//               BLDC_Ctrl_Board_LEDOff(LED4);
-               BEMF_Cnt = 0;
-           }
-
-           break;
-       case 1:                             //启动
-
-           if (MotorA.PWMTicks >= 8)
-           {
-               if ( BEMF())
-               {
-//                   BLDC_Ctrl_Board_LEDOn(LED1);
-                   //  MotorA.FlagSwitchStep = 1;   //换向
-                   BLDC_SwitchStep();
-                   BEMF_Cnt++;
-//                   BLDC_Ctrl_Board_LEDOff(LED1);
-               }
-           }
-
-           if (BEMF_ADC_Cnt < 6000)                   //记录启动过程bemf数据
-           {
-//               ADC_Value[BEMF_ADC_Cnt][0] = ADCConvertedValue_2[0];
-//               ADC_Value[BEMF_ADC_Cnt][1] = ADCConvertedValue_2[1];
-//               ADC_Value[BEMF_ADC_Cnt][2] = ADCConvertedValue_2[2];
-
-               BEMF_ADC_Cnt++;
-           }
-
-           if (BEMF_Cnt >= 50)       //50次换向之后，认为达到平稳状态
-           {
-               MotorA.State++;
-               BEMF_Cnt = 0;
-           }
-           break;
-
-       case 2:
-           if (MotorA.FlagBEMF == 0)      //未检测到过零事件
-           {
-               if (MotorA.PWMTicks >= 8)
-               {
-                   if ( BEMF())
-                   {
-//                       BLDC_Ctrl_Board_LEDOn(LED3);
-                       MotorA.FlagSwitchStep = MotorA.PWMTicksPre >> 1;   //延迟30电角度
-                       MotorA.FlagBEMF = 1;             //检测到过零事件，不再检测
-//                       BLDC_Ctrl_Board_LEDOff(LED3);
-                   }
-               }
-           }
-           else
-           {
-               if (MotorA.FlagSwitchStep == 0)          //延迟时刻到
-               {
-//                   BLDC_Ctrl_Board_LEDOn(LED1);
-                   BLDC_SwitchStep();               //换向
-                   BEMF_Cnt++;
-//                   BLDC_Ctrl_Board_LEDOff(LED1);
-               }
-               else
-               {
-                   MotorA.FlagSwitchStep--;
-               }
-
-           }
-
-           if (BEMF_Cnt >= 80000)       //50000次换向之后，停止
-           {
-               MotorA.State++;
-               BEMF_Cnt = 0;
-           }
-
-           break;
-
-       case 3:
-           BLDC_Stop();
-           break;
-       case 4:
-
-           break;
-       default:
-           break;
-       }
+	  //TODO
+//	  MotorA.Step = 1;
+//	  BLDC_SwitchStep();
+//       switch(MotorA.State)
+//       {
+//		   case 0:                             //定位
+//			   if(MotorA.PWMTicks >= 1000)
+//			   {
+//	//               BLDC_Ctrl_Board_LEDOn(LED4);
+//
+//				   //   MotorA.FlagSwitchStep = 1;   //换向
+//				   BLDC_SwitchStep();
+//				   MotorA.State++;
+//
+//	//               BLDC_Ctrl_Board_LEDOff(LED4);
+//				   BEMF_Cnt = 0;
+//			   }
+//
+//			   break;
+//		   case 1:                             //启动
+//
+//			   if (MotorA.PWMTicks >= 8)
+//			   {
+//				   if ( BEMF())
+//				   {
+//	//                   BLDC_Ctrl_Board_LEDOn(LED1);
+//					   //  MotorA.FlagSwitchStep = 1;   //换向
+//					   BLDC_SwitchStep();
+//					   BEMF_Cnt++;
+//	//                   BLDC_Ctrl_Board_LEDOff(LED1);
+//				   }
+//			   }
+//
+//			   if (BEMF_ADC_Cnt < 6000)                   //记录启动过程bemf数据
+//			   {
+//	//               ADC_Value[BEMF_ADC_Cnt][0] = ADCConvertedValue_2[0];
+//	//               ADC_Value[BEMF_ADC_Cnt][1] = ADCConvertedValue_2[1];
+//	//               ADC_Value[BEMF_ADC_Cnt][2] = ADCConvertedValue_2[2];
+//
+//				   BEMF_ADC_Cnt++;
+//			   }
+//
+//			   if (BEMF_Cnt >= 50)       //50次换向之后，认为达到平稳状态
+//			   {
+//				   MotorA.State++;
+//				   BEMF_Cnt = 0;
+//			   }
+//			   break;
+//
+//		   case 2:
+//			   if (MotorA.FlagBEMF == 0)      //未检测到过零事件
+//			   {
+//				   if (MotorA.PWMTicks >= 8)
+//				   {
+//					   if ( BEMF())
+//					   {
+//	//                       BLDC_Ctrl_Board_LEDOn(LED3);
+//						   MotorA.FlagSwitchStep = MotorA.PWMTicksPre >> 1;   //延迟30电角度
+//						   MotorA.FlagBEMF = 1;             //检测到过零事件，不再检测
+//	//                       BLDC_Ctrl_Board_LEDOff(LED3);
+//					   }
+//				   }
+//			   }
+//			   else
+//			   {
+//				   if (MotorA.FlagSwitchStep == 0)          //延迟时刻到
+//				   {
+//	//                   BLDC_Ctrl_Board_LEDOn(LED1);
+//					   BLDC_SwitchStep();               //换向
+//					   BEMF_Cnt++;
+//	//                   BLDC_Ctrl_Board_LEDOff(LED1);
+//				   }
+//				   else
+//				   {
+//					   MotorA.FlagSwitchStep--;
+//				   }
+//
+//			   }
+//
+//			   if (BEMF_Cnt >= 80000)       //50000次换向之后，停止
+//			   {
+//				   MotorA.State++;
+//				   BEMF_Cnt = 0;
+//			   }
+//
+//			   break;
+//
+//		   case 3:
+//			   BLDC_Stop();
+//			   break;
+//		   case 4:
+//
+//			   break;
+//		   default:
+//			   break;
+//       }
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
@@ -625,6 +680,13 @@ unsigned long BEMF(void)
   */
 void MyInitTIM1PWM(void)
 {
+
+	//开启预装载寄存器
+	__HAL_TIM_ENABLE_OCxPRELOAD(&BLDC_TIMER_NUM,TIM_CHANNEL_1);
+	__HAL_TIM_ENABLE_OCxPRELOAD(&BLDC_TIMER_NUM,TIM_CHANNEL_2);
+	__HAL_TIM_ENABLE_OCxPRELOAD(&BLDC_TIMER_NUM,TIM_CHANNEL_3);
+	__HAL_TIM_ENABLE_OCxPRELOAD(&BLDC_TIMER_NUM,TIM_CHANNEL_4);
+
 //    TIM_CCxCmd(BLDC_TIMER_NUM, TIM_Channel_1, TIM_CCx_Disable);
 //    TIM_CCxNCmd(BLDC_TIMER_NUM, TIM_Channel_1, TIM_CCxN_Disable);
     HAL_TIM_OC_Stop(&BLDC_TIMER_NUM,TIM_CHANNEL_1);
