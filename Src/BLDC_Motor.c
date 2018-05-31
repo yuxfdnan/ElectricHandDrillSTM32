@@ -109,10 +109,11 @@ void BLDC_SwitchStep(void)
     	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_3,CHANNEL_STOP,CHANNEL_START,TIM_MOD_HIGH);
         break;
     case 2://AB
+
         /*  PhaseA configuration */
 //        TIM_CCxCmd(BLDC_TIMER_NUM, TIM_Channel_1, TIM_CCx_Enable);    // 1
 //        TIM_CCxNCmd(BLDC_TIMER_NUM, TIM_Channel_1, TIM_CCxN_Enable);  //同步整流
-    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_1,CHANNEL_STOP,CHANNEL_START,TIM_MOD_PWM);
+    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_1,CHANNEL_START,CHANNEL_START,TIM_MOD_PWM);
 
         /*  PhaseC configuration */
 //        TIM_CCxCmd(BLDC_TIMER_NUM, TIM_Channel_3, TIM_CCx_Disable);   // 0
