@@ -50,6 +50,8 @@ typedef struct
 
 extern MotorParam_TypeDef MotorA;
 
+extern uint32_t BLDC_Pulse;
+
 void BLDC_Init(void);
 
 void BLDC_Stop(void);

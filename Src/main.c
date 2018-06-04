@@ -140,6 +140,7 @@ int main(void)
   MX_TIM1_Init();
 
   /* USER CODE BEGIN 2 */
+  BLDC_Pulse = __HAL_TIM_GET_COMPARE(&htim1,TIM_CHANNEL_1);
   MyInitTIM1PWM();
   BLDC_Init();
 
@@ -538,7 +539,7 @@ static void MX_TIM1_Init(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  sConfigOC.Pulse = 48000000/BLDC_PWM_Freq - 100;
+  sConfigOC.Pulse = 48000000/BLDC_PWM_Freq - 5;//htim1.Init.Period
   if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);

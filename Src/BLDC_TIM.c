@@ -250,6 +250,7 @@
 ////     }
 //}
 
+uint16_t Tim1_4CallbackCnt = 0;
 /*定时器捕获比较事件中断*/
 /**
   * @brief  Output Compare callback in non blocking mode
@@ -258,6 +259,7 @@
   */
 void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
 {
+
   /* Prevent unused argument(s) compilation warning */
   UNUSED(htim);
 
@@ -267,9 +269,19 @@ void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
   if(htim->Channel == HAL_TIM_ACTIVE_CHANNEL_4)
   {
 //  TIM_ClearITPendingBit(BLDC_TIMER_NUM, TIM_IT_CC4);
+
+	  //only for test
+	  HAL_GPIO_TogglePin(Led2_GPIO_Port,Led2_Pin);
+
 	  MotorA.PWMTicks++;
 	  //TODO test
-	  BLDC_SwitchStep();
+	  Tim1_4CallbackCnt ++;
+	  if(Tim1_4CallbackCnt > 1)
+	  {
+		  Tim1_4CallbackCnt = 0;
+		  BLDC_SwitchStep();
+	  }
+
 //  BLDC_Ctrl_Board_LEDOn(LED2);
 
 //  ADC_SoftwareStartConvCmd(ADC1, ENABLE);

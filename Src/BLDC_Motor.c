@@ -10,6 +10,7 @@
 
 MotorParam_TypeDef MotorA;
 extern TIM_HandleTypeDef htim1;
+uint32_t BLDC_Pulse = 0;
 
 
 void BLDC_Init(void)
@@ -70,6 +71,9 @@ void BLDC_SwitchStep(void)
     MotorA.FlagBEMF = 0;
     MotorA.PWMTicks = 0;
 
+    //only for test
+//    MotorA.Step = 0;
+
     switch (MotorA.Step)
     {
     case 0 ://BC导通
@@ -89,7 +93,8 @@ void BLDC_SwitchStep(void)
 //        TIM_CCxCmd(BLDC_TIMER_NUM, TIM_Channel_3, TIM_CCx_Disable);   // 0 上桥关
 //        TIM_OC3NPolarityConfig(BLDC_TIMER_NUM, TIM_OCNPolarity_Low);// 1  常开,一直打开
 //        TIM_CCxNCmd(BLDC_TIMER_NUM, TIM_Channel_3, TIM_CCxN_Disable); // 1 下桥常开,一直打开
-    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_3,CHANNEL_STOP,CHANNEL_START,TIM_MOD_HIGH);
+//    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_3,CHANNEL_STOP,CHANNEL_START,TIM_MOD_HIGH);
+    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_3,CHANNEL_START,CHANNEL_START,TIM_MOD_LOW);
         break;
     case 1://AC
         /*  PhaseB configuration */
@@ -106,7 +111,8 @@ void BLDC_SwitchStep(void)
 //        TIM_CCxCmd(BLDC_TIMER_NUM, TIM_Channel_3, TIM_CCx_Disable);   // 0
 //        TIM_OC3NPolarityConfig(BLDC_TIMER_NUM, TIM_OCNPolarity_Low);
 //        TIM_CCxNCmd(BLDC_TIMER_NUM, TIM_Channel_3, TIM_CCxN_Disable); // 1
-    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_3,CHANNEL_STOP,CHANNEL_START,TIM_MOD_HIGH);
+//    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_3,CHANNEL_STOP,CHANNEL_START,TIM_MOD_HIGH);
+    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_3,CHANNEL_START,CHANNEL_START,TIM_MOD_LOW);
         break;
     case 2://AB
 
@@ -125,7 +131,8 @@ void BLDC_SwitchStep(void)
 //        TIM_CCxCmd(BLDC_TIMER_NUM, TIM_Channel_2, TIM_CCx_Disable);   // 0
 //        TIM_OC2NPolarityConfig(BLDC_TIMER_NUM, TIM_OCNPolarity_Low);
 //        TIM_CCxNCmd(BLDC_TIMER_NUM, TIM_Channel_2, TIM_CCxN_Disable); // 1
-    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_2,CHANNEL_STOP,CHANNEL_START,TIM_MOD_HIGH);
+//    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_2,CHANNEL_STOP,CHANNEL_START,TIM_MOD_HIGH);
+    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_2,CHANNEL_START,CHANNEL_START,TIM_MOD_LOW);
 
         break;
     case 3://CB
@@ -138,7 +145,8 @@ void BLDC_SwitchStep(void)
 //        TIM_CCxCmd(BLDC_TIMER_NUM, TIM_Channel_2, TIM_CCx_Disable);   // 0
 //        TIM_OC2NPolarityConfig(BLDC_TIMER_NUM, TIM_OCNPolarity_Low);
 //        TIM_CCxNCmd(BLDC_TIMER_NUM, TIM_Channel_2, TIM_CCxN_Disable); // 1
-    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_2,CHANNEL_STOP,CHANNEL_START,TIM_MOD_HIGH);
+//    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_2,CHANNEL_STOP,CHANNEL_START,TIM_MOD_HIGH);
+    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_2,CHANNEL_START,CHANNEL_START,TIM_MOD_LOW);
 
         /*  PhaseC configuration */
 //        TIM_CCxCmd(BLDC_TIMER_NUM, TIM_Channel_3, TIM_CCx_Enable);    // 1
@@ -156,7 +164,8 @@ void BLDC_SwitchStep(void)
 //        TIM_CCxCmd(BLDC_TIMER_NUM, TIM_Channel_1, TIM_CCx_Disable);   // 0
 //        TIM_OC1NPolarityConfig(BLDC_TIMER_NUM, TIM_OCNPolarity_Low);
 //        TIM_CCxNCmd(BLDC_TIMER_NUM, TIM_Channel_1, TIM_CCxN_Disable); // 1
-    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_1,CHANNEL_STOP,CHANNEL_START,TIM_MOD_HIGH);
+//    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_1,CHANNEL_STOP,CHANNEL_START,TIM_MOD_HIGH);
+    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_1,CHANNEL_START,CHANNEL_START,TIM_MOD_LOW);//test
 
         /*  PhaseC configuration */
 //        TIM_CCxCmd(BLDC_TIMER_NUM, TIM_Channel_3, TIM_CCx_Enable);    // 1
@@ -168,7 +177,8 @@ void BLDC_SwitchStep(void)
 //        TIM_CCxCmd(BLDC_TIMER_NUM, TIM_Channel_1, TIM_CCx_Disable);   // 0
 //        TIM_OC1NPolarityConfig(BLDC_TIMER_NUM, TIM_OCNPolarity_Low);
 //        TIM_CCxNCmd(BLDC_TIMER_NUM, TIM_Channel_1, TIM_CCxN_Disable); // 1
-    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_1,CHANNEL_STOP,CHANNEL_START,TIM_MOD_HIGH);
+//    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_1,CHANNEL_STOP,CHANNEL_START,TIM_MOD_HIGH);
+    	SetChannelState(&BLDC_TIMER_NUM,TIM_CHANNEL_1,CHANNEL_START,CHANNEL_START,TIM_MOD_LOW);//test
 
         /*  PhaseC configuration */
 //        TIM_CCxCmd(BLDC_TIMER_NUM, TIM_Channel_3, TIM_CCx_Disable);   // 0
@@ -380,6 +390,53 @@ void SetChannelState(TIM_HandleTypeDef *htim, uint32_t Channel, uint8_t OC, uint
 	uint32_t tmpccmrx = 0U;
 	uint32_t tmpCCxE = 0U;
 	uint32_t tmpCCxNE = 0U;
+//	if(OCxM != TIM_MOD_PWM)
+//	{
+//		//0
+//		__HAL_TIM_SET_COMPARE(htim,Channel,0);
+//		if(Channel == TIM_CHANNEL_1)
+//		{
+//			tmpCCxE = TIM_CCER_CC1E;
+//			tmpCCxNE = TIM_CCER_CC1NE;
+//		}else if(Channel == TIM_CHANNEL_2)
+//		{
+//			tmpCCxE = TIM_CCER_CC2E;
+//			tmpCCxNE = TIM_CCER_CC2NE;
+//		}else if(Channel == TIM_CHANNEL_3)
+//		{
+//			tmpCCxE = TIM_CCER_CC3E;
+//			tmpCCxNE = TIM_CCER_CC3NE;
+//		}
+////		if(OC == CHANNEL_START)
+//		{
+//			if(htim->Instance->CCER & tmpCCxE)//已开启
+//			{
+//
+//			}
+//			else
+//			{//未开启
+//				HAL_TIM_PWM_Start(htim,Channel);
+//			}
+//		}
+//
+//
+////		if(OCN == CHANNEL_START)
+//		{
+//			if(htim->Instance->CCER & tmpCCxNE)//已开启
+//			{
+//
+//			}
+//			else
+//			{//未开启
+//				HAL_TIMEx_PWMN_Start(htim,Channel);
+//			}
+//		}
+//		return;
+//	}
+//	else
+//	{//还原
+//		__HAL_TIM_SET_COMPARE(htim,Channel,BLDC_Pulse);
+//	}
 	if(Channel == TIM_CHANNEL_1)
 	{
 		tmpCCxE = TIM_CCER_CC1E;
@@ -410,6 +467,7 @@ void SetChannelState(TIM_HandleTypeDef *htim, uint32_t Channel, uint8_t OC, uint
 //		HAL_TIM_OC_Stop(htim,Channel);
 		HAL_TIM_PWM_Stop(htim,Channel);
 	}
+
 
 	if(OCN == CHANNEL_START)
 	{
